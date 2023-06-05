@@ -1,9 +1,19 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Badge,
   Box,
+  Button,
+  ButtonGroup,
   Card,
   CardBody,
+  Flex,
   Heading,
+  Spacer,
   Stack,
   Text,
   Tooltip,
@@ -12,15 +22,21 @@ import {
 
 import propTypes from "prop-types";
 import CreateKeys from "./CreateKeys.jsx";
+import React, { useEffect, useState } from "react";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 Keys.propTypes = {
   index: propTypes.object.isRequired,
   server: propTypes.object.isRequired,
   setIndexesState: propTypes.func.isRequired,
+  indexes: propTypes.array.isRequired,
 };
 
 export default function Keys(props) {
-  const { index, setIndexesState, server } = props;
+  const { index, setIndexesState, server, indexes } = props;
+  const [keys, setKeys] = useState([]);
+  const [currentKey, setCurrentKey] = useState({});
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
   const toast = useToast();
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -31,24 +47,31 @@ export default function Keys(props) {
     });
   };
 
+  const handleDeleteKey = (key) => {
+    setIsOpenDelete(true);
+    setCurrentKey(key);
+  };
+
+  useEffect(() => {
+    const foundIndex = indexes.find((i) => i.uid === index.uid).keys;
+    setKeys(foundIndex);
+  }, [indexes]);
+
   return (
     <>
       <Box mb={4}>
         <CreateKeys
           index={index}
           setIndexesState={setIndexesState}
+          indexes={indexes}
           server={server}
         />
       </Box>
       <Stack>
-        {index.keys.length > 0 &&
-          index.keys.map((key) => (
+        {keys.length > 0 &&
+          keys.map((key) => (
             <Card key={key.uid} variant={"outline"}>
-              <CardBody
-                onClick={() => {
-                  copyToClipboard(key.key);
-                }}
-              >
+              <CardBody>
                 <Heading size={"md"}>
                   {key.name}
                   <Badge ml={2} colorScheme="green">
@@ -58,19 +81,77 @@ export default function Keys(props) {
                     expires {key.expiresAtRelative}
                   </Badge>
                 </Heading>
-                <Tooltip
-                  label="Click to copy"
-                  aria-label="Click to copy"
-                  hasArrow
-                >
-                  <Box>
-                    <Text>{key.key}</Text>
-                  </Box>
-                </Tooltip>
+                <Flex minWidth={"max-content"} gap={"2"} alignItems="center">
+                  <Tooltip
+                    label="Click to copy"
+                    aria-label="Click to copy"
+                    hasArrow
+                  >
+                    <Box
+                      onClick={() => {
+                        copyToClipboard(key.key);
+                      }}
+                    >
+                      <Text>{key.key}</Text>
+                    </Box>
+                  </Tooltip>
+                  <Spacer />
+                  <ButtonGroup gap="2">
+                    <Button
+                      size={"sm"}
+                      colorScheme="red"
+                      onClick={() => {
+                        handleDeleteKey(key);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </ButtonGroup>
+                </Flex>
               </CardBody>
             </Card>
           ))}
       </Stack>
+
+      <AlertDialog isOpen={isOpenDelete} onClose={() => setIsOpenDelete(false)}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Key <strong>{currentKey.name}</strong> ?
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              {`Are you sure? You can't undo this action afterwards.`}
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button onClick={() => setIsOpenDelete(false)}>Cancel</Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  server
+                    .deleteKey(currentKey.uid)
+                    .then(() => {
+                      setIsOpenDelete(false);
+                      setIndexesState(new Date().getTime());
+                      toast({
+                        title: "Key deleted.",
+                        description: `Key ${currentKey.name} has been deleted.`,
+                        status: "success",
+                      });
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                }}
+                ml={3}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 }

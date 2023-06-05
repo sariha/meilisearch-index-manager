@@ -220,6 +220,7 @@ export default function Indexes(props) {
           <DrawerBody>
             <Keys
               index={currentIndex}
+              indexes={indexes}
               setIndexesState={setIndexesState}
               server={server}
             />

@@ -61,11 +61,10 @@ export default function CreateKeys(props) {
           expiresAt: expireAt,
         })
         .then((data) => {
-          setIndexesState(Date.now());
           return data;
         })
         .catch((error) => {
-          console.log(error.message);
+          console.error(error.message);
           return error;
         });
     } catch (error) {
@@ -87,9 +86,24 @@ export default function CreateKeys(props) {
               expireAt: aYearFromNow,
               keyTypes: ["public", "private"],
             }}
-            onSubmit={(values, actions) => {
-              console.log(values, date);
-              setIndexesState(new Date().getTime());
+            onSubmit={async (values, actions) => {
+              for (const type of values.keyTypes) {
+                await addKey(
+                  `${index.uid}-${type}`,
+                  `${index.uid}-${type}`,
+                  index.uid,
+                  type,
+                  values.expireAt.toISOString()
+                ).then((data) => {
+                  toast({
+                    title: "Keys created.",
+                    description: `Keys ${index.uid}-${type} created successfully`,
+                    status: "success",
+                  });
+                  setIndexesState(new Date().getTime());
+                });
+              }
+              onClose();
             }}
           >
             {(props) => (
