@@ -23,7 +23,7 @@ import {
 import propTypes from "prop-types";
 import CreateKeys from "./CreateKeys.jsx";
 import React, { useEffect, useState } from "react";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, UnlockIcon } from "@chakra-ui/icons";
 
 Keys.propTypes = {
   index: propTypes.object.isRequired,
@@ -37,6 +37,7 @@ export default function Keys(props) {
   const [keys, setKeys] = useState([]);
   const [currentKey, setCurrentKey] = useState({});
   const [isOpenDelete, setIsOpenDelete] = useState(false);
+
   const toast = useToast();
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -82,21 +83,36 @@ export default function Keys(props) {
                   </Badge>
                 </Heading>
                 <Flex minWidth={"max-content"} gap={"2"} alignItems="center">
-                  <Tooltip
-                    label="Click to copy"
-                    aria-label="Click to copy"
-                    hasArrow
-                  >
-                    <Box
-                      onClick={() => {
-                        copyToClipboard(key.key);
-                      }}
+                  <Box>
+                    <Tooltip
+                      label="UID: click to copy"
+                      aria-label="UID: Click to copy"
+                      hasArrow
                     >
-                      <Text>{key.key}</Text>
-                    </Box>
-                  </Tooltip>
+                      <Box
+                        onClick={() => {
+                          copyToClipboard(key.uid);
+                        }}
+                      >
+                        <Text>UID: {key.uid}</Text>
+                      </Box>
+                    </Tooltip>
+                    <Tooltip
+                      label="API key : Click to copy"
+                      aria-label="API key : Click to copy"
+                      hasArrow
+                    >
+                      <Box
+                        onClick={() => {
+                          copyToClipboard(key.key);
+                        }}
+                      >
+                        <Text>API key: {key.key}</Text>
+                      </Box>
+                    </Tooltip>
+                  </Box>
                   <Spacer />
-                  <ButtonGroup gap="2">
+                  <ButtonGroup>
                     <Button
                       size={"sm"}
                       colorScheme="red"

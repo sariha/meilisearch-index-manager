@@ -31,6 +31,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import propTypes from "prop-types";
 import Keys from "./Keys.jsx";
 import CreateIndex from "./CreateIndex.jsx";
+import ServerInfo from "./ServerInfos.jsx";
 
 dayjs.extend(relativeTime);
 
@@ -108,7 +109,9 @@ export default function Indexes(props) {
   return (
     //list of meilisearch keys
     <Box align={"left"}>
-      <Heading>Indexes</Heading>
+      <Heading>Server</Heading>
+
+      <ServerInfo server={server} />
 
       <AlertDialog
         isOpen={isOpenDelete}
@@ -154,7 +157,7 @@ export default function Indexes(props) {
         </AlertDialogOverlay>
       </AlertDialog>
 
-      <Box pt={25}>
+      <Box pt={25} align={"right"}>
         <CreateIndex
           server={server}
           indexes={indexes}
@@ -162,12 +165,16 @@ export default function Indexes(props) {
         />
       </Box>
 
+      <Heading as="h2" size="3x1">
+        Indexes
+      </Heading>
+
       <TableContainer pt={25}>
         <Table variant="simple" size="sm">
           <Thead>
             <Tr>
-              <Th w={200}>Index Name</Th>
-              <Th w={10}></Th>
+              <Th w={200}>Name</Th>
+              <Th w={10}>Count</Th>
               <Th></Th>
             </Tr>
           </Thead>
