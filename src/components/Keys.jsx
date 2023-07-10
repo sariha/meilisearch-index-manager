@@ -23,7 +23,7 @@ import {
 import propTypes from "prop-types";
 import CreateKeys from "./CreateKeys.jsx";
 import React, { useEffect, useState } from "react";
-import { DeleteIcon, UnlockIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 Keys.propTypes = {
   index: propTypes.object.isRequired,
@@ -37,7 +37,6 @@ export default function Keys(props) {
   const [keys, setKeys] = useState([]);
   const [currentKey, setCurrentKey] = useState({});
   const [isOpenDelete, setIsOpenDelete] = useState(false);
-
   const toast = useToast();
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
