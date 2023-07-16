@@ -77,7 +77,7 @@ export default function Login(props) {
         <Stack align={"center"}>
           <Heading fontSize={"4xl"}>Server Credentials</Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
-            Enter the server credentials to continue.
+            Enter the server credentials to continue. Credentials will be stored in browser only.
           </Text>
         </Stack>
         <Box
