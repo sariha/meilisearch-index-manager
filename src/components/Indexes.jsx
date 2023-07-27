@@ -37,10 +37,11 @@ dayjs.extend(relativeTime);
 
 Indexes.propTypes = {
   server: propTypes.object.isRequired,
+  setServer: propTypes.func.isRequired
 };
 
 export default function Indexes(props) {
-  const { server } = props;
+  const { server, setServer } = props;
   const [indexesState, setIndexesState] = useState(new Date().getTime());
   const [indexes, setIndexes] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -108,10 +109,10 @@ export default function Indexes(props) {
 
   return (
     //list of meilisearch keys
-    <Box align={"left"}>
-      <Heading>Server</Heading>
+    <Box align={"left"} p={"4"}>
 
-      <ServerInfo server={server} />
+
+      <ServerInfo server={server} setServer={setServer} />
 
       <AlertDialog
         isOpen={isOpenDelete}

@@ -22,7 +22,7 @@ export default function Login(props) {
   const [credentials, setCredentials] = useState(
     localStorage.getItem("credentials")
       ? JSON.parse(localStorage.getItem("credentials"))
-      : {}
+      : { host: "", apiKey: "" }
   );
 
   const connect = async (credentials) => {
@@ -38,9 +38,7 @@ export default function Login(props) {
             isClosable: true,
           });
 
-          console.log(`MeiliSearch version: ${version.pkgVersion}`);
           localStorage.setItem("credentials", JSON.stringify(credentials));
-
           setServer(meilisearch);
         })
         .catch((error) => {
@@ -116,6 +114,16 @@ export default function Login(props) {
               >
                 Connect
               </Button>
+
+              {credentials.host && credentials.apiKey && (
+                  <Button onClick={()=>{
+                        localStorage.removeItem("credentials");
+                        setCredentials({ host: "", apiKey: "" });
+                  }}>
+                    Forget credentials
+                  </Button>
+              )}
+
             </Stack>
           </Stack>
         </Box>
