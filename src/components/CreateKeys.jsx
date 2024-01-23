@@ -39,7 +39,7 @@ export default function CreateKeys(props) {
 
   const addKey = async (name, description, index, type, expireAt) => {
     const actions =
-      type === "search"
+      type === "public"
         ? ["search"]
         : [
             "search",
